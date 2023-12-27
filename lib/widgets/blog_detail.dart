@@ -56,7 +56,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(25.0),
                     child: Text(
                       blog!.content!,
                       style: const TextStyle(

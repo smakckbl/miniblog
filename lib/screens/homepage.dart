@@ -7,7 +7,7 @@ import 'package:miniblog/screens/add_blog.dart';
 import 'package:miniblog/widgets/blog_item.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({Key? key});
+  const Homepage({super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -23,6 +23,7 @@ class _HomepageState extends State<Homepage> {
     fetchBlogs();
   }
 
+  // DRY Principle - dont repeat yourself
   fetchBlogs() async {
     Uri url = Uri.parse("https://tobetoapi.halitkalayci.com/api/Articles");
     final response = await http.get(url);
@@ -35,54 +36,33 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("FLUTTER BLOG"),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              bool? result = await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (builder) => AddBlog(),
-                ),
-              );
+        appBar: AppBar(
+          title: const Text("Blog Listesi"),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  bool? result = await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (builder) => AddBlog()));
 
-              if (result == true) {
-                fetchBlogs();
-              }
-            },
-            icon: const Icon(Icons.add),
-          )
-        ],
-      ),
-      body: blogList.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: () async {
-                fetchBlogs();
-              },
-              child: ListView.builder(
-                itemBuilder: (ctx, index) => Container(
-                  margin: EdgeInsets.symmetric(vertical: 19, horizontal: 40),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(45),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.withOpacity(0.5),
-                        spreadRadius: 7,
-                        blurRadius: 5,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: BlogItem(blog: blogList[index]),
+                  if (result == true) {
+                    fetchBlogs();
+                  }
+                },
+                icon: const Icon(Icons.add))
+          ],
+        ),
+        body: blogList.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+                onRefresh: () async {
+                  fetchBlogs();
+                },
+                child: ListView.builder(
+                  itemBuilder: (ctx, index) => BlogItem(blog: blogList[index]),
+                  itemCount: blogList.length,
                 ),
-                itemCount: blogList.length,
-              ),
-            ),
-    );
+              ));
   }
 }
